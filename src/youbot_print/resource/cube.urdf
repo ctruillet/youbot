@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot name="cube">
+  <link name="box">
+    <visual>
+      <geometry>
+        <box size="0.005 0.005 0.005"/>
+      </geometry>
+    </visual>
+  </link>
+</robot>

@@ -584,7 +584,7 @@
 				<pose frame='arm_link_5'>-0.05 0 -0.001 0 -1.57 0</pose>
 				<geometry>
 					<cylinder>
-						<length>0.1</length>
+						<length>0.07</length>
 						<radius>0.005</radius>
 					</cylinder>
 				</geometry>
@@ -603,7 +603,7 @@
 				</surface>
 			</collision>
 			<visual name='pen_visual'>
-				<pose frame='arm_link_5'>-0.05 0 -0.001 0 -1.57 0</pose>
+				<pose frame='arm_link_5'>0.05 0 -0.001 0 -1.57 0</pose>
 				<geometry>
 					<cylinder>
 						<length>0.1</length>
@@ -616,7 +616,7 @@
 			<gravity>1</gravity>
 		</link>
 		<link name="printer">
-			<pose frame='pen'>-0.1 0 0 0 0 0</pose>
+			<pose frame='pen'>0.01 0 0 0 0 0</pose>
 			<inertial>
 				<mass>0.01</mass>
 				<inertia>
@@ -708,12 +708,12 @@
 				<limit>
 					<lower>0</lower>
 					<upper>3.57792</upper>
-					<effort>2</effort>
+					<effort>200</effort>
 					<velocity>1.5708</velocity>
 				</limit>
 				<dynamics>
 					<damping>1</damping>
-					<friction>1</friction>
+					<friction>100</friction>
 					<spring_reference>0</spring_reference>
 					<spring_stiffness>0</spring_stiffness>
 				</dynamics>
