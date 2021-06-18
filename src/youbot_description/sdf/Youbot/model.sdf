@@ -2,13 +2,12 @@
 <sdf version='1.6'>
 	<model name='youbot'>
 		
+		<!-- VIRTUAL JOINT -->
 		<!-- In order to move the youbot without use wheels-->
-		<link name="world" >
-			<!-- <pose>0 0 0.1 0 0 0</pose> -->
-		</link>
-
+		<link name="world" />
 		<link name="virtual_link_xy" />
-
+		<link name="virtual_link_yz" />
+		
 		<joint name="virtual_joint_x" type="prismatic">
 			<axis>
 				<xyz>1 0 0</xyz>
@@ -19,14 +18,9 @@
 					<velocity>1</velocity>
 				</limit>
 			</axis>
-
 			<parent>world</parent>
 			<child>virtual_link_xy</child>
-			
 		</joint>
-
-		<link name="virtual_link_yz" />
-
 		<joint name="virtual_joint_y" type="prismatic">
 			<axis>
 				<xyz>0 1 0</xyz>
@@ -40,7 +34,6 @@
 			<parent>virtual_link_xy</parent>
 			<child>virtual_link_yz</child>
 		</joint>
-
 		<joint name="virtual_joint_z" type="revolute">
 			<axis>
 				<xyz>0 0 1</xyz>
@@ -56,6 +49,7 @@
 		</joint>
 
 		
+		<!-- BASE -->
 		<link name='base_footprint'>
 			<pose frame=''>0 0 0 0 0 0</pose>
 			<inertial>
@@ -281,6 +275,9 @@
 			</sensor>
 			<kinematic>0</kinematic>
 		</link>
+	
+	
+		<!-- ARM -->
 		<link name='arm_link_1'>
 			<pose frame=''>0.167 0 0.142 0 -0 2.96706</pose>
 			<inertial>
@@ -325,38 +322,12 @@
 						<uri>model://youbot/meshes/youbot_arm/arm1.dae</uri>
 					</mesh>
 				</geometry>
-				<material>
-					<!--<script>
-							<uri>__default__</uri>
-							<name>__default__</name>
-						</script>--></material>
 			</visual>
 			<gravity>1</gravity>
 			<velocity_decay/>
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='arm_joint_1'
-		       type='revolute'>
-			<child>arm_link_1</child>
-			<parent>base_footprint</parent>
-			<axis>
-				<xyz>0 0 -1</xyz>
-				<limit>
-					<lower>0</lower>
-					<upper>5.89921</upper>
-					<effort>9.5</effort>
-					<velocity>1.5708</velocity>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='arm_link_2'>
 			<pose frame=''>0.134501 0.00573 0.161 0 -1.13446 2.96706</pose>
 			<inertial>
@@ -401,38 +372,12 @@
 						<uri>model://youbot/meshes/youbot_arm/arm2.dae</uri>
 					</mesh>
 				</geometry>
-				<material>
-					<!--<script>
-							<uri>__default__</uri>
-							<name>__default__</name>
-						</script>--></material>
 			</visual>
 			<gravity>1</gravity>
 			<velocity_decay/>
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='arm_joint_2'
-		       type='revolute'>
-			<child>arm_link_2</child>
-			<parent>arm_link_1</parent>
-			<axis>
-				<xyz>-0.173648 -0.984808 0</xyz>
-				<limit>
-					<lower>0</lower>
-					<upper>2.70526</upper>
-					<effort>9.5</effort>
-					<velocity>1.5708</velocity>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='arm_link_3'>
 			<pose frame=''>0.272845 -0.018663 0.226506 -0 1.41372 2.96706</pose>
 			<inertial>
@@ -477,38 +422,12 @@
 						<uri>model://youbot/meshes/youbot_arm/arm3.dae</uri>
 					</mesh>
 				</geometry>
-				<material>
-					<!--<script>
-							<uri>__default__</uri>
-							<name>__default__</name>
-						</script>--></material>
 			</visual>
 			<gravity>1</gravity>
 			<velocity_decay/>
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='arm_joint_3'
-		       type='revolute'>
-			<child>arm_link_3</child>
-			<parent>arm_link_2</parent>
-			<axis>
-				<xyz>-0.173648 -0.984808 0</xyz>
-				<limit>
-					<lower>-5.18363</lower>
-					<upper>0</upper>
-					<effort>6</effort>
-					<velocity>1.5708</velocity>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='arm_link_4'>
 			<pose frame=''>0.141533 0.004491 0.247624 0 -0.375246 2.96706</pose>
 			<inertial>
@@ -553,38 +472,12 @@
 						<uri>model://youbot/meshes/youbot_arm/arm4.dae</uri>
 					</mesh>
 				</geometry>
-				<material>
-					<!--<script>
-							<uri>__default__</uri>
-							<name>__default__</name>
-						</script>--></material>
 			</visual>
 			<gravity>1</gravity>
 			<velocity_decay/>
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='arm_joint_4'
-		       type='revolute'>
-			<child>arm_link_4</child>
-			<parent>arm_link_3</parent>
-			<axis>
-				<xyz>-0.173648 -0.984808 0</xyz>
-				<limit>
-					<lower>0</lower>
-					<upper>3.57792</upper>
-					<effort>2</effort>
-					<velocity>1.5708</velocity>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='arm_link_5'>
 			<pose frame=''>0.190287 -0.004106 0.367846 -0.085052 0.365926 -0.408446</pose>
 			<inertial>
@@ -651,11 +544,6 @@
 						<uri>model://youbot/meshes/youbot_arm/arm5.dae</uri>
 					</mesh>
 				</geometry>
-				<material>
-					<!--<script>
-							<uri>__default__</uri>
-							<name>__default__</name>
-						</script>--></material>
 			</visual>
 			<visual name='arm_link_5_fixed_joint_lump__gripper_palm_link_visual_1'>
 				<pose frame=''>0 0 0 0 -0 0</pose>
@@ -678,28 +566,6 @@
 			<self_collide>1</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='arm_joint_5'
-		       type='revolute'>
-			<child>arm_link_5</child>
-			<parent>arm_link_4</parent>
-			<axis>
-				<xyz>-0.360933 0.063642 -0.930418</xyz>
-				<limit>
-					<lower>0</lower>
-					<upper>5.84685</upper>
-					<effort>1</effort>
-					<velocity>1.5708</velocity>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
-
 		<link name="pen">
 			<pose frame='arm_link_5'>0 0 0 0 0 0</pose>
 			<inertial>
@@ -715,7 +581,7 @@
 				</inertia>
 			</inertial>
 			<collision name='pen_collision'>
-				<pose frame='arm_link_5'>0.05 0 -0.001 0 -1.57 0</pose>
+				<pose frame='arm_link_5'>-0.05 0 -0.001 0 -1.57 0</pose>
 				<geometry>
 					<cylinder>
 						<length>0.1</length>
@@ -737,7 +603,7 @@
 				</surface>
 			</collision>
 			<visual name='pen_visual'>
-				<pose frame='arm_link_5'>0.05 0 -0.001 0 -1.57 0</pose>
+				<pose frame='arm_link_5'>-0.05 0 -0.001 0 -1.57 0</pose>
 				<geometry>
 					<cylinder>
 						<length>0.1</length>
@@ -749,25 +615,8 @@
 			<kinematic>0</kinematic>
 			<gravity>1</gravity>
 		</link>
-
-		<joint name='pen_joint'
-		       type='fixed'>
-			<child>pen</child>
-			<parent>arm_link_5</parent>
-			<axis>
-				<xyz>0 0 0</xyz>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
-
 		<link name="printer">
-			<pose frame='arm_link_5'>0.1 0 0 0 0 0</pose>
+			<pose frame='pen'>-0.1 0 0 0 0 0</pose>
 			<inertial>
 				<mass>0.01</mass>
 				<inertia>
@@ -790,7 +639,121 @@
 			<kinematic>0</kinematic>
 			<gravity>1</gravity>
 		</link>
-
+		
+		<joint name='arm_joint_1' type='revolute'>
+			<child>arm_link_1</child>
+			<parent>base_footprint</parent>
+			<axis>
+				<xyz>0 0 -1</xyz>
+				<limit>
+					<lower>-3.14</lower>
+					<upper>3.14</upper>
+					<effort>9.5</effort>
+					<velocity>1.5708</velocity>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='arm_joint_2' type='revolute'>
+			<child>arm_link_2</child>
+			<parent>arm_link_1</parent>
+			<axis>
+				<xyz>-0.173648 -0.984808 0</xyz>
+				<limit>
+					<lower>0</lower>
+					<upper>2.70526</upper>
+					<effort>9.5</effort>
+					<velocity>1.5708</velocity>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='arm_joint_3' type='revolute'>
+			<child>arm_link_3</child>
+			<parent>arm_link_2</parent>
+			<axis>
+				<xyz>-0.173648 -0.984808 0</xyz>
+				<limit>
+					<lower>-5.18363</lower>
+					<upper>0</upper>
+					<effort>6</effort>
+					<velocity>1.5708</velocity>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='arm_joint_4' type='revolute'>
+			<child>arm_link_4</child>
+			<parent>arm_link_3</parent>
+			<axis>
+				<xyz>-0.173648 -0.984808 0</xyz>
+				<limit>
+					<lower>0</lower>
+					<upper>3.57792</upper>
+					<effort>2</effort>
+					<velocity>1.5708</velocity>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='arm_joint_5' type='revolute'>
+			<child>arm_link_5</child>
+			<parent>arm_link_4</parent>
+			<axis>
+				<xyz>-0.360933 0.063642 -0.930418</xyz>
+				<limit>
+					<lower>0</lower>
+					<upper>5.84685</upper>
+					<effort>1</effort>
+					<velocity>1.5708</velocity>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='pen_joint' type='fixed'>
+			<child>pen</child>
+			<parent>arm_link_5</parent>
+			<axis>
+				<xyz>0 0 0</xyz>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
 		<joint name="printer_joint" type="fixed">
 			<child>printer</child>
 			<parent>pen</parent>
@@ -806,6 +769,8 @@
 			</axis>
 		</joint>
 
+
+		<!-- PLATEFORM-->
 		<link name='caster_link_bl'>
 			<pose frame=''>-0.228 0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -825,25 +790,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='caster_joint_bl'
-		       type='revolute'>
-			<child>caster_link_bl</child>
-			<parent>base_footprint</parent>
-			<axis>
-				<xyz>0 0 1</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='wheel_link_bl'>
 			<pose frame=''>-0.228 0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -902,25 +848,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='wheel_joint_bl'
-		       type='revolute'>
-			<child>wheel_link_bl</child>
-			<parent>caster_link_bl</parent>
-			<axis>
-				<xyz>0 1 0</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='caster_link_br'>
 			<pose frame=''>-0.228 -0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -940,25 +867,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='caster_joint_br'
-		       type='revolute'>
-			<child>caster_link_br</child>
-			<parent>base_footprint</parent>
-			<axis>
-				<xyz>0 0 1</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='wheel_link_br'>
 			<pose frame=''>-0.228 -0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -1017,25 +925,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='wheel_joint_br'
-		       type='revolute'>
-			<child>wheel_link_br</child>
-			<parent>caster_link_br</parent>
-			<axis>
-				<xyz>0 1 0</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='caster_link_fl'>
 			<pose frame=''>0.228 0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -1055,25 +944,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='caster_joint_fl'
-		       type='revolute'>
-			<child>caster_link_fl</child>
-			<parent>base_footprint</parent>
-			<axis>
-				<xyz>0 0 1</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='wheel_link_fl'>
 			<pose frame=''>0.228 0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -1132,25 +1002,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='wheel_joint_fl'
-		       type='revolute'>
-			<child>wheel_link_fl</child>
-			<parent>caster_link_fl</parent>
-			<axis>
-				<xyz>0 1 0</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='caster_link_fr'>
 			<pose frame=''>0.228 -0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -1170,25 +1021,6 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='caster_joint_fr'
-		       type='revolute'>
-			<child>caster_link_fr</child>
-			<parent>base_footprint</parent>
-			<axis>
-				<xyz>0 0 1</xyz>
-				<limit>
-					<lower>-1e+16</lower>
-					<upper>1e+16</upper>
-				</limit>
-				<dynamics>
-					<damping>1</damping>
-					<friction>1</friction>
-					<spring_reference>0</spring_reference>
-					<spring_stiffness>0</spring_stiffness>
-				</dynamics>
-				<use_parent_model_frame>1</use_parent_model_frame>
-			</axis>
-		</joint>
 		<link name='wheel_link_fr'>
 			<pose frame=''>0.228 -0.158 -0.034 0 -0 0</pose>
 			<inertial>
@@ -1247,8 +1079,134 @@
 			<self_collide>0</self_collide>
 			<kinematic>0</kinematic>
 		</link>
-		<joint name='wheel_joint_fr'
-		       type='revolute'>
+		
+		<joint name='caster_joint_bl' type='revolute'>
+			<child>caster_link_bl</child>
+			<parent>base_footprint</parent>
+			<axis>
+				<xyz>0 0 1</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='wheel_joint_bl' type='revolute'>
+			<child>wheel_link_bl</child>
+			<parent>caster_link_bl</parent>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='caster_joint_br' type='revolute'>
+			<child>caster_link_br</child>
+			<parent>base_footprint</parent>
+			<axis>
+				<xyz>0 0 1</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='wheel_joint_br' type='revolute'>
+			<child>wheel_link_br</child>
+			<parent>caster_link_br</parent>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>	
+		<joint name='caster_joint_fl' type='revolute'>
+			<child>caster_link_fl</child>
+			<parent>base_footprint</parent>
+			<axis>
+				<xyz>0 0 1</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='wheel_joint_fl' type='revolute'>
+			<child>wheel_link_fl</child>
+			<parent>caster_link_fl</parent>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='caster_joint_fr' type='revolute'>
+			<child>caster_link_fr</child>
+			<parent>base_footprint</parent>
+			<axis>
+				<xyz>0 0 1</xyz>
+				<limit>
+					<lower>-1e+16</lower>
+					<upper>1e+16</upper>
+				</limit>
+				<dynamics>
+					<damping>1</damping>
+					<friction>1</friction>
+					<spring_reference>0</spring_reference>
+					<spring_stiffness>0</spring_stiffness>
+				</dynamics>
+				<use_parent_model_frame>1</use_parent_model_frame>
+			</axis>
+		</joint>
+		<joint name='wheel_joint_fr' type='revolute'>
 			<child>wheel_link_fr</child>
 			<parent>caster_link_fr</parent>
 			<axis>
@@ -1266,62 +1224,40 @@
 				<use_parent_model_frame>1</use_parent_model_frame>
 			</axis>
 		</joint>
-		<!-- <plugin name='gazebo_ros2_control'
-		        filename='libgazebo_ros2_control.so'>
-			<robotNamespace>/youbot</robotNamespace>
-		</plugin> -->
+
 		<static>0</static>
+		
+		<!-- PLUGINS -->
 		<plugin name="gazebo_ros_joint_pose_trajectory" filename="libgazebo_ros_joint_pose_trajectory.so">
 			<ros>
 				<namespace>/youbot</namespace>
 			</ros>
 			<update_rate>100</update_rate>
 		</plugin>
-
-		<plugin name='base_controller'
-		        filename='libgazebo_ros_planar_move.so'>
+		<plugin name='base_controller' filename='libgazebo_ros_planar_move.so'>
 			<ros>	
 				<namespace>/youbot</namespace>
-				<!-- <argument>cmd_vel:=cmd_vel</argument>
-				<argument>odom:=odom</argument> -->
 			</ros>
-
-			<!-- Set control loop update rate -->
 			<update_rate>100</update_rate>
-			<!-- Set odom publish rate -->
 			<publish_rate>10</publish_rate>
-
-			<!-- Set if odom required -->
 			<publish_odom>true</publish_odom>
 			<publish_odom_tf>true</publish_odom_tf>
-
-			<!-- Frame IDs -->
 			<robot_base_frame>base_footprint</robot_base_frame>
-
-			<!-- Set odom covariance -->
 			<covariance_x>0.0001</covariance_x>
 			<covariance_y>0.0001</covariance_y>
 			<covariance_yaw>0.01</covariance_yaw>
 		</plugin>
-
 		<plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
-
 			<ros>
-				<!-- Add namespace and remap the default topic -->
 				<namespace>/youbot</namespace>
 				<argument>odom:=p3d</argument>
 			</ros>
-
-			<!-- Replace camelCase elements with camel_case ones -->
 			<body_name>printer</body_name>
 			<frame_name>ground_plane</frame_name>
 			<update_rate>1</update_rate>
-			<!-- <xyz_offset>1 1 1</xyz_offset>
-			<rpy_offset>0.1 0.1 0.1</rpy_offset> -->
 			<gaussian_noise>0.01</gaussian_noise>
-
       	</plugin>
-
+		
 		<pose frame=''>0 0 0 0 -0 0</pose>
 	</model>
 </sdf>

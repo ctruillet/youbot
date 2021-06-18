@@ -60,7 +60,7 @@ ros2 topic pub /youbot/set_joint_trajectory trajectory_msgs/msg/JointTrajectory 
 ```
 
 Arm (start) : 
-    arm_joint_1 : 3.1
+    arm_joint_1 : 3.14
     arm_joint_2 : 3.0
     arm_joint_3 : -1.0
     arm_joint_4 : 0.3
