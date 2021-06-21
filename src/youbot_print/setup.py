@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                'listener = youbot_print.subscriber_member_function:main',
+                'printer = youbot_print.printer:main',
+                'controlArm = youbot_print.controlArm:main',
         ],
 },
 )

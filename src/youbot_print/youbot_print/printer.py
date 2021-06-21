@@ -22,11 +22,38 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 from math import inf
 
+cube_urdf = """ 
+<?xml version="1.0"?>
+<robot name="cube">
+  <gazebo>
+    <static>true</static>
+  </gazebo>
+  <link name="box">
+    <visual>
+      <geometry>
+        <sphere radius="0.1"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+</robot>
+"""
 
 class MinimalSubscriber(Node):
 
     def __init__(self):
-        super().__init__('youbot_subscriber')
+        super().__init__('youbot_print')
         self.get_logger().info("subscribe")
         self.subscription = self.create_subscription(
             Odometry,
@@ -35,10 +62,6 @@ class MinimalSubscriber(Node):
             10)
         self.subscription  # prevent unused variable warning
         self.lastPosition = [inf, inf, inf]
-
-
-        self.publisherJointTrajectory_ = self.create_publisher(JointTrajectory, '/youbot/set_joint_trajectory', 10)
-        self.timer = self.create_timer(0.5, self.setArmPosition)
 
     def listener_callback(self, msg):
         x = round(msg.pose.pose.position.x, 3)
@@ -54,17 +77,9 @@ class MinimalSubscriber(Node):
 
     def printing(self, x, y, z):
         self.get_logger().info("Print a cube a the position : {x:%f, y:%f, z:%f}" % (x,y,z))
-        msg = "ros2 run gazebo_ros spawn_entity.py -entity " + str(x) + "" + str(y) + "" + str(z) + " -x " + str(x) + " -y " + str(y) + " -z " + str(z) + " -file $PWD/src/youbot_print/resource/cube.urdf"
+        msg = "ros2 run gazebo_ros spawn_entity.py -entity " + str(x) + "" + str(y) + "" + str(z) + " -x " + str(x) + " -y " + str(y) + " -file $PWD/src/youbot_print/resource/cube.urdf"
         
         returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
-
-    def setArmPosition(self):
-        msg = JointTrajectory()
-        msg.header.frame_id="world";
-        msg.joint_names = ['youbot::arm_joint_1', 'youbot::arm_joint_2', 'youbot::arm_joint_3', 'youbot::arm_joint_4', 'youbot::arm_joint_5']
-        msg.points = [JointTrajectoryPoint(positions=[3.1, 3.0, -1.0, 0.3, 2.9])]
-
-        self.publisherJointTrajectory_.publish(msg)
 
 
 
