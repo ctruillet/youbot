@@ -20,7 +20,7 @@ def generate_launch_description():
     return LaunchDescription([
         ExecuteProcess(
         #    cmd=['gazebo', '--verbose', 'sdf/world.sdf', '-s libgazebo_ros_factory.so'],
-            cmd=['gazebo', '--verbose', os.path.join(get_package_share_directory("youbot_description"), "sdf", "world.sdf"), '-s libgazebo_ros_factory.so'],
+            cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so', os.path.join(get_package_share_directory("youbot_description"), "sdf", "world.sdf")],
             output='screen'
         ),
         # Node(package='robot_state_publisher',

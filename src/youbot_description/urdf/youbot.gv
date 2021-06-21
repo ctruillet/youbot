@@ -1,0 +1,62 @@
+digraph G {
+node [shape=box];
+"base_footprint" [label="base_footprint"];
+"base_link" [label="base_link"];
+"arm_link_0" [label="arm_link_0"];
+"arm_link_1" [label="arm_link_1"];
+"arm_link_2" [label="arm_link_2"];
+"arm_link_3" [label="arm_link_3"];
+"arm_link_4" [label="arm_link_4"];
+"arm_link_5" [label="arm_link_5"];
+"pen" [label="pen"];
+"printer" [label="printer"];
+"base_laser_front_link" [label="base_laser_front_link"];
+"caster_link_bl" [label="caster_link_bl"];
+"wheel_link_bl" [label="wheel_link_bl"];
+"caster_link_br" [label="caster_link_br"];
+"wheel_link_br" [label="wheel_link_br"];
+"caster_link_fl" [label="caster_link_fl"];
+"wheel_link_fl" [label="wheel_link_fl"];
+"caster_link_fr" [label="caster_link_fr"];
+"wheel_link_fr" [label="wheel_link_fr"];
+"plate_link" [label="plate_link"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_footprint" -> "base_footprint_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"base_footprint_joint" -> "base_link"
+"base_link" -> "arm_joint_0" [label="xyz: 0.143 0 0.046 \nrpy: 0 -0 0"]
+"arm_joint_0" -> "arm_link_0"
+"arm_link_0" -> "arm_joint_1" [label="xyz: 0.024 0 0.095 \nrpy: 0 -0 2.96706"]
+"arm_joint_1" -> "arm_link_1"
+"arm_link_1" -> "arm_joint_2" [label="xyz: 0.033 0 0.02 \nrpy: 0 -1.13446 0"]
+"arm_joint_2" -> "arm_link_2"
+"arm_link_2" -> "arm_joint_3" [label="xyz: 0 0 0.155 \nrpy: 3.14159 0.593414 3.14159"]
+"arm_joint_3" -> "arm_link_3"
+"arm_link_3" -> "arm_joint_4" [label="xyz: 0 0 0.135 \nrpy: 3.14159 -1.35263 3.14159"]
+"arm_joint_4" -> "arm_link_4"
+"arm_link_4" -> "arm_joint_5" [label="xyz: 0 0 0.114 \nrpy: 0 -0 2.92342"]
+"arm_joint_5" -> "arm_link_5"
+"arm_link_5" -> "pen_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"pen_joint" -> "pen"
+"pen" -> "printer_joint" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"printer_joint" -> "printer"
+"base_link" -> "base_laser_front_hokuyo_urg04_laser_joint" [label="xyz: 0.3 0 -0.03 \nrpy: -2.65359e-06 2.65359e-06 -2.65359e-06"]
+"base_laser_front_hokuyo_urg04_laser_joint" -> "base_laser_front_link"
+"base_link" -> "caster_joint_bl" [label="xyz: -0.228 0.158 -0.034 \nrpy: 0 -0 0"]
+"caster_joint_bl" -> "caster_link_bl"
+"caster_link_bl" -> "wheel_joint_bl" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"wheel_joint_bl" -> "wheel_link_bl"
+"base_link" -> "caster_joint_br" [label="xyz: -0.228 -0.158 -0.034 \nrpy: 0 -0 0"]
+"caster_joint_br" -> "caster_link_br"
+"caster_link_br" -> "wheel_joint_br" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"wheel_joint_br" -> "wheel_link_br"
+"base_link" -> "caster_joint_fl" [label="xyz: 0.228 0.158 -0.034 \nrpy: 0 -0 0"]
+"caster_joint_fl" -> "caster_link_fl"
+"caster_link_fl" -> "wheel_joint_fl" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"wheel_joint_fl" -> "wheel_link_fl"
+"base_link" -> "caster_joint_fr" [label="xyz: 0.228 -0.158 -0.034 \nrpy: 0 -0 0"]
+"caster_joint_fr" -> "caster_link_fr"
+"caster_link_fr" -> "wheel_joint_fr" [label="xyz: 0 0 0 \nrpy: 0 -0 0"]
+"wheel_joint_fr" -> "wheel_link_fr"
+"base_link" -> "plate_joint" [label="xyz: -0.159 0 0.055 \nrpy: 0 -0 0"]
+"plate_joint" -> "plate_link"
+}
