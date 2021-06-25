@@ -6,7 +6,7 @@
   <link name="box">
     <visual>
       <geometry>
-        <sphere radius="0.1"/>
+        <box size="0.01 0.01 0.01"/>
       </geometry>
       <material name="red">
         <color rgba="1 0 0 1"/>
@@ -14,7 +14,7 @@
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.1"/>
+        <box size="0.01 0.01 0.01"/>
       </geometry>
     </collision>
     <inertial>

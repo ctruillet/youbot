@@ -13,6 +13,8 @@
 # limitations under the License.
 import subprocess
 import rclpy
+import time
+import copy
 from rclpy.node import Node
 
 from std_msgs.msg import String
@@ -20,9 +22,9 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, PoseWithCovariance, Pose, Point, Quaternion
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
-from math import inf
+from math import inf, sqrt, cos, sin
 
-cube_urdf = """ 
+print_elt ="""
 <?xml version="1.0"?>
 <robot name="cube">
   <gazebo>
@@ -31,7 +33,7 @@ cube_urdf = """
   <link name="box">
     <visual>
       <geometry>
-        <sphere radius="0.1"/>
+        <box size="0.01 0.01 0.01"/>
       </geometry>
       <material name="red">
         <color rgba="1 0 0 1"/>
@@ -39,7 +41,7 @@ cube_urdf = """
     </visual>
     <collision>
       <geometry>
-        <sphere radius="0.1"/>
+        <box size="0.01 0.01 0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -61,26 +63,63 @@ class MinimalSubscriber(Node):
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning
-        self.lastPosition = [inf, inf, inf]
+        self.controlPoints = []
+        self.lastPosition = [inf, inf]
+
+        self.fileControlPoint = open("./src/youbot_print/resource/controlPoints.csv","w")
+        self.fileControlPoint.write("x, y\n")
 
     def listener_callback(self, msg):
         x = round(msg.pose.pose.position.x, 3)
         y = round(msg.pose.pose.position.y, 3)
-        z = round(msg.pose.pose.position.z, 3)
         
         if( self.lastPosition[0] - x > 0.001 or
-            self.lastPosition[1] - y > 0.001 or
-            self.lastPosition[2] - z > 0.001):
-            self.printing(x, y, z)
+            self.lastPosition[1] - y > 0.001):
 
-        self.lastPosition = [x ,y ,z]
+            self.lastPosition = [x ,y]
+            
+            self.saveControlPoints((x,y))
+            self.printing((x, y))
+        else:
+            self.lastPosition = [x ,y]
 
-    def printing(self, x, y, z):
-        self.get_logger().info("Print a cube a the position : {x:%f, y:%f, z:%f}" % (x,y,z))
-        msg = "ros2 run gazebo_ros spawn_entity.py -entity " + str(x) + "" + str(y) + "" + str(z) + " -x " + str(x) + " -y " + str(y) + " -file $PWD/src/youbot_print/resource/cube.urdf"
         
+
+    def printing(self, P):
+        x = copy.copy(P[0])
+        y = copy.copy(P[1])
+        self.get_logger().info("Print a cube a the position : {x:%f, y:%f}" % (x,y))
+        msg = "ros2 run gazebo_ros spawn_entity.py -entity cube" + str(x) + "" + str(y) + " -x " + str(x) + " -y " + str(y) + " -file $PWD/src/youbot_print/resource/cube.urdf"
         returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
 
+    def saveControlPoints(self, P):
+        self.fileControlPoint.write(str(P[0]) + "," + str(P[1]) + "\n")
+
+    # def printing(self, A, B):
+    #     self.printCurently = True
+    #     xA = A[0]
+    #     yA = A[1]
+    #     xB = B[0]
+    #     yB = B[1]
+    #     distance = sqrt((xB-xA)**2 + (yB-yA)**2)
+    #     if (distance > 10 or distance <= 0.01):
+    #         self.printCurently = False
+    #         return 
+
+    #     self.get_logger().info(" >>> Distance : %f" % distance)
+
+    #     t = 0
+    #     while (t <= distance):
+    #         x = xA + t * (xB-xA)
+    #         y = yB + t * (yB-yA)
+
+    #         self.get_logger().info("Print a cube a the position : {x:%f, y:%f}" % (x,y))
+    #         msg = "ros2 run gazebo_ros spawn_entity.py -entity cube" + str(x) + "" + str(y) + " -x " + str(x) + " -y " + str(y) + " -file $PWD/src/youbot_print/resource/cube.urdf"
+    #         returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
+
+    #         t += 0.02
+
+    #     self.printCurently = False
 
 
 def main(args=None):

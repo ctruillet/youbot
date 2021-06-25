@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<sdf version='1.6'>
+	<model name='youbot'>
+		
+		<!-- VIRTUAL JOINT -->
+		<!-- In order to move the youbot without use wheels-->
+		<link name="world" />
+		<link name="virtual_link_xy" />
+		<link name="virtual_link_yz" />
+		
+		<joint name="virtual_joint_x" type="prismatic" />
+		<joint name="virtual_joint_y" type="prismatic" />
+		
+		<!-- BASE -->
+		<link name='base_footprint' >
+			<sensor name='base_laser_front' type='gpu_ray'>
+				<ray>
+					<scan>
+						<horizontal>
+							<min_angle>-1.57</min_angle>
+							<max_angle>1.57</max_angle>
+						</horizontal>
+					</scan>
+					<range>
+						<min>0.05</min>
+						<max>5.6</max>
+					</range>
+					<noise>
+						<type>gaussian</type>
+						<mean>0.00</mean>
+					</noise>
+				</ray>
+				<plugin name='gazebo_ros_base_laser_front_controller'
+				        filename='libgazebo_ros_ray_sensor.so'>
+					<ros>
+						<namespace>/youbot</namespace>
+						<argument>--ros-args --remap ~/out:=scan</argument>
+					</ros>
+					<output_type>sensor_msgs/LaserScan</output_type>
+				</plugin>
+			</sensor>
+		</link>
+	
+		<!-- ARM -->
+		<link name='arm_link_1' />
+		<link name='arm_link_2' />
+		<link name='arm_link_3' />
+		<link name='arm_link_4' />
+		<link name="pen" />
+		<link name="printer" />
+		
+		<joint name='arm_joint_1' type='revolute' />
+		<joint name='arm_joint_2' type='revolute' />
+		<joint name='arm_joint_3' type='revolute' />
+		<joint name='arm_joint_4' type='revolute' />
+		<joint name='arm_joint_5' type='revolute' />
+		<joint name='pen_joint' type='fixed' />
+		<joint name="printer_joint" type="fixed" />
+
+		<!-- PLATEFORM-->
+		<link name='caster_link_bl' />
+		<link name='wheel_link_bl' />
+		<link name='caster_link_br' />
+		<link name='wheel_link_br' />
+		<link name='caster_link_fl' />
+		<link name='wheel_link_fl' />
+		<link name='caster_link_fr' />
+		<link name='wheel_link_fr' />
+		
+		<joint name='caster_joint_bl' type='revolute' />
+		<joint name='wheel_joint_bl' type='revolute' />
+		<joint name='caster_joint_br' type='revolute' />
+		<joint name='wheel_joint_br' type='revolute' />
+		<joint name='caster_joint_fl' type='revolute' />
+		<joint name='wheel_joint_fl' type='revolute' />
+		<joint name='caster_joint_fr' type='revolute' />
+		<joint name='wheel_joint_fr' type='revolute' />
+		
+		<!-- PLUGINS -->
+		<plugin name="gazebo_ros_joint_pose_trajectory" filename="libgazebo_ros_joint_pose_trajectory.so" />
+		<plugin name='base_controller' filename='libgazebo_ros_planar_move.so' >
+			<robot_base_frame>base_footprint</robot_base_frame>
+		</plugin>
+		<plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+			<body_name>printer</body_name>
+      	</plugin>
+	</model>
+</sdf>
