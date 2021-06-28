@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+	<model name="cube">
+		<static>true</static>
+		<link name="box">
+			<pose frame=''>0.49 -0.032 0.01 0.0 0.0 -1.5629839857347956</pose>
+			<inertial>
+				<mass>0.01</mass>
+				<inertia>
+					<ixx>0.01</ixx>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyy>0.01</iyy>
+					<iyz>0</iyz>
+					<izz>0.01</izz>
+				</inertia>
+			</inertial>
+			<visual name='box_visual'>
+				<geometry>
+					<box>
+						<size>0.002 0.256 0.01</size>
+					</box>
+				</geometry>
+			</visual>
+			<self_collide>0</self_collide>
+			<kinematic>0</kinematic>
+			<gravity>1</gravity>
+		</link>
+	</model>
+</sdf>

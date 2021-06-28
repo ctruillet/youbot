@@ -22,119 +22,91 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, PoseWithCovariance, Pose, Point, Quaternion
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
-from math import inf, sqrt, cos, sin
+from math import inf, sqrt, cos, sin, atan2
 
-print_elt ="""
-<?xml version="1.0"?>
-<robot name="cube">
-  <gazebo>
-    <static>true</static>
-  </gazebo>
-  <link name="box">
-    <visual>
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-      <material name="red">
-        <color rgba="1 0 0 1"/>
-      </material>
-    </visual>
-    <collision>
-      <geometry>
-        <box size="0.01 0.01 0.01"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.01"/>
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
-    </inertial>
-  </link>
-</robot>
-"""
 
 class MinimalSubscriber(Node):
+  def __init__(self):
+    super().__init__('youbot_print')
+    self.get_logger().info("subscribe")
+    self.subscription = self.create_subscription(
+        Odometry,
+        '/youbot/p3d',
+        self.listener_callback,
+        10)
+    self.subscription  # prevent unused variable warning
+    self.printCurently = False
+    self.controlPoints = []
+    self.lastPosition = [inf, inf]
 
-    def __init__(self):
-        super().__init__('youbot_print')
-        self.get_logger().info("subscribe")
-        self.subscription = self.create_subscription(
-            Odometry,
-            '/youbot/p3d',
-            self.listener_callback,
-            10)
-        self.subscription  # prevent unused variable warning
-        self.controlPoints = []
-        self.lastPosition = [inf, inf]
-
-        self.fileControlPoint = open("./src/youbot_print/resource/controlPoints.csv","w")
-        self.fileControlPoint.write("x, y\n")
-
-    def listener_callback(self, msg):
-        x = round(msg.pose.pose.position.x, 3)
-        y = round(msg.pose.pose.position.y, 3)
+  def listener_callback(self, msg):
+    x = round(msg.pose.pose.position.x, 3)
+    y = round(msg.pose.pose.position.y, 3)
         
-        if( self.lastPosition[0] - x > 0.001 or
-            self.lastPosition[1] - y > 0.001):
+    if( self.lastPosition[0] == inf or
+        self.lastPosition[1] == inf):   
+        self.lastPosition = [x ,y]
 
-            self.lastPosition = [x ,y]
-            
-            self.saveControlPoints((x,y))
-            self.printing((x, y))
-        else:
-            self.lastPosition = [x ,y]
+    if( self.lastPosition[0] - x > 0.001 or
+        self.lastPosition[1] - y > 0.001):
+      P = (copy.copy(self.lastPosition[0]),copy.copy(self.lastPosition[1]))
+      self.lastPosition = [x ,y]
+      self.waitUntil(self.printCurently)
+      self.printing(P, (x, y))
+      
+    self.lastPosition = [x ,y]
+        
+  def printing(self, A, B):
+    self.printCurently = True
+    xA = A[0]
+    yA = A[1]
+    xB = B[0]
+    yB = B[1]
+    distance = sqrt((xB-xA)**2 + (yB-yA)**2)
+    if (distance <= 0.01 or distance > 100):
+      self.printCurently = False
+      return 
+
+    angle = atan2(yB - yA, xB - xA)
+
+    self.get_logger().info(" >>> Distance : %f" % distance)
+
+    self.get_logger().info("Print a cube a the position : {x:%f, y:%f, angle:%f}" % (xA,yA,angle))
+    msg = "ros2 service call /spawn_entity 'gazebo_msgs/SpawnEntity' '{name: \"cube"
+    msg = msg + str(xA) + "" + str(yA) + "\", xml: \"<?xml version=\\\"1.0\\\"?> <sdf version=\\\"1.5\\\"><model name=\\\"cube\\\"><static>true</static><link name=\\\"box\\\"><pose frame=''>"
+    msg = msg + str(xA) + " " + str(yA) + " " +"0.01 0.0 0.0" + str(angle) 
+    msg = msg + "</pose><inertial><mass>0.01</mass><inertia><ixx>0.01</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.01</iyy><iyz>0</iyz><izz>0.01</izz></inertia></inertial>"
+    msg = msg + "<visual name='box_visual'><geometry><box><size>"
+    msg = msg + str(round(distance,3)) + " 0.01 0.01"
+    #msg = msg + str(max(round(abs(yB-yA),3),0.01)) + " " + str(max(round(abs(xB-xA),3),0.01)) + " 0.01"
+    msg = msg + "</size></box></geometry></visual><self_collide>0</self_collide><kinematic>0</kinematic><gravity>1</gravity></link></model></sdf>"
+    msg = msg + "\"}'"
+
+    # self.get_logger().info(" >>> MSG : %s" % msg)
+
+    returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
+
+    self.printCurently = False
+
+  def waitUntil(self, boolean):
+    while boolean:
+      time.sleep(0.1)
 
         
-
-    def printing(self, P):
-        x = copy.copy(P[0])
-        y = copy.copy(P[1])
-        self.get_logger().info("Print a cube a the position : {x:%f, y:%f}" % (x,y))
-        msg = "ros2 run gazebo_ros spawn_entity.py -entity cube" + str(x) + "" + str(y) + " -x " + str(x) + " -y " + str(y) + " -file $PWD/src/youbot_print/resource/cube.urdf"
-        returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
-
-    def saveControlPoints(self, P):
-        self.fileControlPoint.write(str(P[0]) + "," + str(P[1]) + "\n")
-
-    # def printing(self, A, B):
-    #     self.printCurently = True
-    #     xA = A[0]
-    #     yA = A[1]
-    #     xB = B[0]
-    #     yB = B[1]
-    #     distance = sqrt((xB-xA)**2 + (yB-yA)**2)
-    #     if (distance > 10 or distance <= 0.01):
-    #         self.printCurently = False
-    #         return 
-
-    #     self.get_logger().info(" >>> Distance : %f" % distance)
-
-    #     t = 0
-    #     while (t <= distance):
-    #         x = xA + t * (xB-xA)
-    #         y = yB + t * (yB-yA)
-
-    #         self.get_logger().info("Print a cube a the position : {x:%f, y:%f}" % (x,y))
-    #         msg = "ros2 run gazebo_ros spawn_entity.py -entity cube" + str(x) + "" + str(y) + " -x " + str(x) + " -y " + str(y) + " -file $PWD/src/youbot_print/resource/cube.urdf"
-    #         returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
-
-    #         t += 0.02
-
-    #     self.printCurently = False
-
 
 def main(args=None):
-    rclpy.init(args=args)
+  rclpy.init(args=args)
 
-    minimal_subscriber = MinimalSubscriber()
+  minimal_subscriber = MinimalSubscriber()
 
-    rclpy.spin(minimal_subscriber)
+  rclpy.spin(minimal_subscriber)
 
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    minimal_subscriber.destroy_node()
-    rclpy.shutdown()
+  # Destroy the node explicitly
+  # (optional - otherwise it will be done automatically
+  # when the garbage collector destroys the node object)
+  minimal_subscriber.destroy_node()
+  rclpy.shutdown()
 
 
 if __name__ == '__main__':
-    main()
+  main()
