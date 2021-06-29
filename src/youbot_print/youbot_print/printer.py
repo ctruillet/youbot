@@ -51,7 +51,7 @@ class MinimalSubscriber(Node):
 			lastP = copy.copy(self.lastPosition)
 			self.lastPosition = copy.copy(P)
 			self.get_logger().info("================================================================================")
-			self.get_logger().info("GET OOINT")
+			self.get_logger().info("GET POINT")
 			self.get_logger().info("\t {P:{x:%.3f, y:%.3f, z:%.3f}}" % (P[0], P[1], P[2]) )
 			self.get_logger().info("================================================================================")
 			self.waitUntil(self.printCurently)
@@ -78,7 +78,7 @@ class MinimalSubscriber(Node):
 		zB = B[2]
 
 		distance = np.linalg.norm(B - A)
-		if (distance <= 0.01 or distance >= 100):
+		if (distance <= 0.05 or distance >= 100):
 			self.printCurently = False
 			return 
 
@@ -93,7 +93,7 @@ class MinimalSubscriber(Node):
 		self.get_logger().info("================================================================================")
 		msg = "ros2 service call /spawn_entity 'gazebo_msgs/SpawnEntity' '{name: \"cube"
 		msg = msg + str(xA) + "" + str(yA) + "\", xml: \"<?xml version=\\\"1.0\\\"?> <sdf version=\\\"1.5\\\"><model name=\\\"cube\\\"><static>true</static><link name=\\\"box\\\"><pose frame=''>"
-		msg = msg + str(xA+xOffset) + " " + str(yA+yOffset) + " " + str(zA+zOffset) + " 0.0 0.0 " + str(angle) 
+		msg = msg + str((xA+xB)/2 + xOffset) + " " + str((yA+yB)/2 + yOffset) + " " + str((zA+zB)/2 + zOffset) + " 0.0 0.0 " + str(angle) 
 		msg = msg + "</pose><inertial><mass>0.01</mass><inertia><ixx>0.01</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.01</iyy><iyz>0</iyz><izz>0.01</izz></inertia></inertial>"
 		msg = msg + "<visual name='box_visual'><geometry><box><size>"
 		msg = msg + str(distance) + " 0.01 0.01"
