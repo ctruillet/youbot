@@ -28,6 +28,7 @@ from math import inf, sqrt, cos, sin, atan2
 xOffset = 0.484
 yOffset = -0.042
 zOffset = 0.0
+zlevel = 0
 
 
 class MinimalSubscriber(Node):
@@ -93,7 +94,7 @@ class MinimalSubscriber(Node):
 		self.get_logger().info("================================================================================")
 		msg = "ros2 service call /spawn_entity 'gazebo_msgs/SpawnEntity' '{name: \"cube"
 		msg = msg + str(xA) + "" + str(yA) + "\", xml: \"<?xml version=\\\"1.0\\\"?> <sdf version=\\\"1.5\\\"><model name=\\\"cube\\\"><static>true</static><link name=\\\"box\\\"><pose frame=''>"
-		msg = msg + str((xA+xB)/2 + xOffset) + " " + str((yA+yB)/2 + yOffset) + " " + str((zA+zB)/2 + zOffset) + " 0.0 0.0 " + str(angle) 
+		msg = msg + str((xA+xB)/2 + xOffset) + " " + str((yA+yB)/2 + yOffset) + " " + str((zA+zB)/2 + zOffset + zlevel*0.1) + " 0.0 0.0 " + str(angle) 
 		msg = msg + "</pose><inertial><mass>0.01</mass><inertia><ixx>0.01</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.01</iyy><iyz>0</iyz><izz>0.01</izz></inertia></inertial>"
 		msg = msg + "<visual name='box_visual'><geometry><box><size>"
 		msg = msg + str(distance) + " 0.01 0.01"

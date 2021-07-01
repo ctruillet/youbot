@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'controlArm = youbot_fake_moveit.controlArm:main',
+            'fake_moveit = youbot_fake_moveit.fake_moveit:main',
         ],
     },
 )

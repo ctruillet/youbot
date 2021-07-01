@@ -26,7 +26,7 @@ from math import inf
 class MinimalSubscriber(Node):
 
     def __init__(self):
-        super().__init__('youbot_controlArm')
+        super().__init__('youbot_fake_moveit')
         self.get_logger().info("subscribe")
 
         self.publisherJointTrajectory_ = self.create_publisher(JointTrajectory, '/youbot/set_joint_trajectory', 10)
