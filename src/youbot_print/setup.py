@@ -21,7 +21,6 @@ setup(
     entry_points={
         'console_scripts': [
                 'printer = youbot_print.printer:main',
-                'controlArm = youbot_print.controlArm:main',
         ],
 },
 )

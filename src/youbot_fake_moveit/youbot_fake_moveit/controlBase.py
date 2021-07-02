@@ -36,7 +36,7 @@ windRose = {
 }
 
 
-class FakeMoveIt(Node):
+class ControlBase(Node):
 
     def __init__(self):
         super().__init__('youbot_fake_moveit')
@@ -150,7 +150,7 @@ class FakeMoveIt(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_subscriber = FakeMoveIt()
+    minimal_subscriber = ControlBase()
 
     rclpy.spin(minimal_subscriber)
 
