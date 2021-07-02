@@ -23,7 +23,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from math import inf
 
 
-class MinimalSubscriber(Node):
+class ControlArm(Node):
 
     def __init__(self):
         super().__init__('youbot_fake_moveit')
@@ -46,7 +46,7 @@ class MinimalSubscriber(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_subscriber = MinimalSubscriber()
+    minimal_subscriber = ControlArm()
 
     rclpy.spin(minimal_subscriber)
 

@@ -21,40 +21,38 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
+from std_msgs import Int32
 from math import atan2, sqrt, pi, cos, sin
 
 windRose = {
-    "W" : pi,
-    "NW" : 3*pi/4.0,
-    "N" : pi/2.0,
-    "NE" : pi/4.0,
-    "E" : 0.0,
-    "SE" : -pi/4.0,
-    "S" : -pi/2.0,
-    "SW" : -3*pi/4.0,
+    "W" : pi/2.0,
+    "NW" : pi/4.0,
+    "N" : 0.0,
+    "NE" : -pi/4.0,
+    "E" : -pi/2.0,
+    "SE" : -3*pi/4.0,
+    "S" : pi,
+    "SW" : 3*pi/4.0,
 }
 
 
-class MinimalSubscriber(Node):
+class FakeMoveIt(Node):
 
     def __init__(self):
         super().__init__('youbot_fake_moveit')
-        self.controlPointFile = "./src/youbot_fake_moveit/resource/controlPoints2.csv"
+        self.controlPointFile = "./src/youbot_fake_moveit/resource/print_Shape.csv"
         self.position = np.array([0.0,0.0,0.0])
         self.angle = 0.0
+        self.angleYoubot = 0.0
         self.endMove = True
 
         self.publisherControlBaseTrajectory = self.create_publisher(Twist, '/youbot/cmd_vel', 10)
+        self.publisherControlLevel = self.create_publisher(Int32, '/youbot/cmd_level', 10)
 
         self.controlList = []
         self.readFile()
 
         self.move(self.controlList)
-
-        # self.get_logger().info("subscribe")
-
-        # self.publisherJointTrajectory_ = self.create_publisher(JointTrajectory, '/youbot/set_joint_trajectory', 10)
-        # self.timer = self.create_timer(0.5, self.setArmPosition)
 
     def readFile(self):
         with open(self.controlPointFile, mode='r') as csv_file:
@@ -80,44 +78,51 @@ class MinimalSubscriber(Node):
                         round(sin(angle) * distance,2),
                         level - self.position[2]])
 
-
         # LEVEL
         if(abs(mvt[2]) > 0):
             msg = Twist()
             msg.linear.z = mvt[2]
 
         # ANGLE
-        for i in range (int( round(16*abs(angle)/pi,0))):
+        # ToDo
+        mvtAngle = abs(angle - self.angleYoubot + pi/2.0)%pi
+
+        for i in range (int( round(16*abs(mvtAngle)/pi,0))):
             msg = Twist()
-            msg.angular.z = angle/abs(angle) * pi/16.0
-            #self.controlList.append(msg)
+            msg.angular.z = mvtAngle/abs(mvtAngle) * pi/16.0
+            self.controlList.append(msg)
+        self.angleYoubot = angle
+        self.controlList.append(self.genStopMsg())
 
         if distance <= 0.0:
-            pass
+            return
 
         # MOUVEMENT
         # print(f'   >>> MOVEMENT OF {mvt[0]}, {mvt[1]}, {mvt[2]}')
         for i in range (10*int(round(distance/0.1,0))):
             msg = Twist()
-            if (mvt[0] != 0):
-                msg.linear.x =  0.1
-            else: 
-                msg.linear.x =  0.0
 
-            if (mvt[1] != 0):
-                msg.linear.y =  0.1
-            else: 
-                msg.linear.y =  0.0   
+            if (round(cos(angle),3) == 0.0):
+                msg.linear.x = 0.0
+            else :
+                msg.linear.x = round(cos(angle),3)/abs(round(cos(angle),3)) * 0.1
+
+            if (round(sin(angle),3) == 0.0):
+                msg.linear.y = 0.0
+            else :
+                msg.linear.y = round(sin(angle),3)/abs(round(sin(angle),3)) * 0.1
+
             msg.angular.z = 0.0
 
             self.controlList.append(msg)
-
-        # print("\t\tM", int(round(distance/0.1,0)), "A",int( round(16*abs(angle)/pi,0)))
+        self.controlList.append(self.genStopMsg())
+        # print(f' >> {round(cos(angle),2)} - {round(sin(angle),2)}')
+        # print(f' >> {direction}\t{angle}\t{distance}\t{level}')
                    
-
     def move(self, controlList):
         print(" BEGINNING OF THE MOVEMENT ")
         for msg in controlList:
+            # print(msg)
             if(msg.linear.z != 0):
                 self.changeLevel(msg.linear.z)
                 pass
@@ -125,26 +130,27 @@ class MinimalSubscriber(Node):
                 self.publisherControlBaseTrajectory.publish(msg)
             time.sleep(0.2)
 
+
+        self.publisherControlBaseTrajectory.publish(self.genStopMsg())
+
+        print(" END OF THE MOVEMENT ")
+        
+    def changeLevel(self, level):
+        self.publisherControlLevel.publish(level)
+    
+    def genStopMsg(self):
         msg = Twist()
         msg.linear.x = 0.0
         msg.linear.y = 0.0
         msg.linear.z = 0.0
         msg.angular.z = 0.0
-        self.publisherControlBaseTrajectory.publish(msg)
-
-        print(" END OF THE MOVEMENT ")
-        
-
-    def changeLevel(self, level):
-        #ToDo
-        pass
-
+        return msg
 
 
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_subscriber = MinimalSubscriber()
+    minimal_subscriber = FakeMoveIt()
 
     rclpy.spin(minimal_subscriber)
 
