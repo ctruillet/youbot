@@ -66,16 +66,6 @@ class Printer(Node):
 
 	def listener_callback_CMD_LEVEL(self, msg):
 		self.zlevel = msg
-
-
-    # if( self.lastPosition[0] - x > 0.001 or
-    #     self.lastPosition[1] - y > 0.001):
-    #   P = (copy.copy(self.lastPosition[0]),copy.copy(self.lastPosition[1]))
-    #   self.lastPosition = [x ,y]
-    #   self.waitUntil(self.printCurently)
-    #   self.printing(P, (x, y))
-      
-    # self.lastPosition = [x ,y]
         
 	def printing(self, A, B):
 		self.printCurently = True

@@ -1,9 +1,39 @@
 
 # Youbot
 
+![](misc/youbot.png)
+
+
+## Launch Simulation
+**Terminal 1**
+```sh
+export GAZEBO_MODEL_PATH=$PWD/src/youbot_description/sdf
+colcon build
+ros2 launch youbot_description rviz.launch.py
+```
+
+**Terminal 2**
+```sh
+ros2 run youbot_fake_moveit controlArm
+```
+
+**Terminal 3**
+```sh
+ros2 run youbot_print printer
+```
+
+**Terminal 4**
+```sh
+ros2 run youbot_fake_moveit controlBase
+```
+
+
 
 ## youbot_description
-Robot description in form of URDF files and meshes
+Robot description in form of SDF, URDF files and meshes   
+
+
+This Youbot robot is a modified version of the [Youbot](http://www.youbot-store.com/) sold by Kuka until 2016 as part of an internship with the University of [Ostfalia](https://www.ostfalia.de/cms/de/i/), Wolfenbüttel.
 
 ```
 robot name is: youbot
@@ -33,33 +63,9 @@ root Link: world has 1 child(ren)
 
 ```
 
-This Youbot robot is a modified version of the [Youbot](http://www.youbot-store.com/) sold by Kuka until 2016 as part of an internship with the University of [Ostfalia](https://www.ostfalia.de/cms/de/i/), Wolfenbüttel.
+## youbot_fake_moveit
+ROS package to control the Youbot   
 
-
-![](misc/youbot.png)
-
-
-## Launch Rviz
-```sh
-cd youbot_description
-colcon build
-ros2 launch youbot_description rviz.launch.py
-```
-
-## Launch Gazebo
-```sh
-cd youbot_description
-colcon build
-export GAZEBO_MODEL_PATH=$PWD/src/youbot_description/sdf
-ros2 launch youbot_description gazebo.launch.py
-```
-
-## Examples
-### Move joint (Gazebo)
-```sh
-# launch gazebo
-ros2 topic pub /youbot/set_joint_trajectory trajectory_msgs/msg/JointTrajectory "{header: {frame_id: world}, joint_names: {youbot::arm_joint_2}, points: [{positions: {1.0}}]}"
-```
 
 ## youbot_print
-ROS 2 package to simulate printing
+ROS package for 3D printing   
