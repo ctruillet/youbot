@@ -1,29 +1,15 @@
-# Copyright 2016 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import subprocess
 import rclpy
 import time
 import copy
-from rclpy.node import Node
 import numpy as np
 
+from rclpy.node import Node
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, PoseWithCovariance, Pose, Point, Quaternion
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
-from std_msgs import Int32
-
+from std_msgs.msg import Int32
 from math import inf, sqrt, cos, sin, atan2
 
 xOffset = 0.484
@@ -50,6 +36,10 @@ class Printer(Node):
 		self.controlPoints = []
 		self.zlevel = 0.0
 		self.lastPosition = np.array([0.0, 0.0, 0.0])
+		
+	def listener_callback_CMD_LEVEL(self, msg):
+		print("> LEVEL : ",msg)
+		self.zlevel = msg.data
 
 	def listener_callback_P3D(self, msg):
 		P = np.array([round(msg.pose.pose.position.x, 3),round(msg.pose.pose.position.y, 3),round(msg.pose.pose.position.z, 3)])
@@ -63,9 +53,6 @@ class Printer(Node):
 			self.get_logger().info("================================================================================")
 			self.waitUntil(self.printCurently)
 			self.printing(lastP, P)
-
-	def listener_callback_CMD_LEVEL(self, msg):
-		self.zlevel = msg
         
 	def printing(self, A, B):
 		self.printCurently = True
@@ -92,7 +79,7 @@ class Printer(Node):
 		self.get_logger().info("================================================================================")
 		msg = "ros2 service call /spawn_entity 'gazebo_msgs/SpawnEntity' '{name: \"cube"
 		msg = msg + str(xA) + "" + str(yA) + "\", xml: \"<?xml version=\\\"1.0\\\"?> <sdf version=\\\"1.5\\\"><model name=\\\"cube\\\"><static>true</static><link name=\\\"box\\\"><pose frame=''>"
-		msg = msg + str((xA+xB)/2 + xOffset) + " " + str((yA+yB)/2 + yOffset) + " " + str((zA+zB)/2 + zOffset + self.zlevel*0.2) + " 0.0 0.0 " + str(angle) 
+		msg = msg + str((xA+xB)/2 + xOffset) + " " + str((yA+yB)/2 + yOffset) + " " + str((zA+zB)/2 + zOffset + self.zlevel*0.01) + " 0.0 0.0 " + str(angle) 
 		msg = msg + "</pose><inertial><mass>0.01</mass><inertia><ixx>0.01</ixx><ixy>0</ixy><ixz>0</ixz><iyy>0.01</iyy><iyz>0</iyz><izz>0.01</izz></inertia></inertial>"
 		msg = msg + "<visual name='box_visual'><geometry><box><size>"
 		msg = msg + str(distance) + " 0.01 0.01"
@@ -102,7 +89,6 @@ class Printer(Node):
 		# self.get_logger().info(" >>> MSG : %s" % msg)
 
 		returned_value = subprocess.call(msg, shell=True)  # returns the exit code in unix
-
 		self.printCurently = False
 
 	def waitUntil(self, boolean):
@@ -112,15 +98,9 @@ class Printer(Node):
 
 def main(args=None):
 	rclpy.init(args=args)
-
-	minimal_subscriber = Printer()
-
-	rclpy.spin(minimal_subscriber)
-
-	# Destroy the node explicitly
-	# (optional - otherwise it will be done automatically
-	# when the garbage collector destroys the node object)
-	minimal_subscriber.destroy_node()
+	printer = Printer()
+	rclpy.spin(printer)
+	printer.destroy_node()
 	rclpy.shutdown()
 
 

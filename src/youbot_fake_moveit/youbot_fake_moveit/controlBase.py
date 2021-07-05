@@ -1,27 +1,15 @@
-# Copyright 2016 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import subprocess
 import rclpy
 import csv
 import copy
 import numpy as np
 import time
+import sys
 from rclpy.node import Node
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
-from std_msgs import Int32
+from std_msgs.msg import Int32
 from math import atan2, sqrt, pi, cos, sin
 
 windRose = {
@@ -40,7 +28,8 @@ class ControlBase(Node):
 
     def __init__(self):
         super().__init__('youbot_fake_moveit')
-        self.controlPointFile = "./src/youbot_fake_moveit/resource/print_Shape.csv"
+        # self.controlPointFile = "./src/youbot_fake_moveit/resource/print_Shape.csv"
+        self.controlPointFile = "./src/youbot_fake_moveit/resource/print_Level.csv"
         self.position = np.array([0.0,0.0,0.0])
         self.angle = 0.0
         self.angleYoubot = 0.0
@@ -60,7 +49,6 @@ class ControlBase(Node):
             line_count = 0
             for row in csv_reader:
                 if line_count == 0:
-                    #print(f'Column names are {", ".join(row)}')
                     line_count += 1
 
                 direction = row["direction"]
@@ -82,15 +70,16 @@ class ControlBase(Node):
         if(abs(mvt[2]) > 0):
             msg = Twist()
             msg.linear.z = mvt[2]
+            self.controlList.append(self.genStopMsg())
+            self.controlList.append(msg)
 
         # ANGLE
-        # ToDo
-        mvtAngle = abs(angle - self.angleYoubot + pi/2.0)%pi
-
+        mvtAngle = round(abs(angle - self.angleYoubot + pi/2.0)%pi,3)
+        print(f' >> {angle} - {self.angleYoubot}\t{mvtAngle}')
         for i in range (int( round(16*abs(mvtAngle)/pi,0))):
             msg = Twist()
             msg.angular.z = mvtAngle/abs(mvtAngle) * pi/16.0
-            self.controlList.append(msg)
+            # self.controlList.append(msg)
         self.angleYoubot = angle
         self.controlList.append(self.genStopMsg())
 
@@ -118,6 +107,10 @@ class ControlBase(Node):
         self.controlList.append(self.genStopMsg())
         # print(f' >> {round(cos(angle),2)} - {round(sin(angle),2)}')
         # print(f' >> {direction}\t{angle}\t{distance}\t{level}')
+
+        print(f' >> {mvt[2]}\t{mvtAngle}\t{distance}')
+        
+
                    
     def move(self, controlList):
         print(" BEGINNING OF THE MOVEMENT ")
@@ -136,7 +129,9 @@ class ControlBase(Node):
         print(" END OF THE MOVEMENT ")
         
     def changeLevel(self, level):
-        self.publisherControlLevel.publish(level)
+        msg = Int32()
+        msg.data = int(level)
+        self.publisherControlLevel.publish(msg)
     
     def genStopMsg(self):
         msg = Twist()
@@ -149,15 +144,9 @@ class ControlBase(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-
-    minimal_subscriber = ControlBase()
-
-    rclpy.spin(minimal_subscriber)
-
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    minimal_subscriber.destroy_node()
+    controlBase = ControlBase()
+    rclpy.spin(controlBase)
+    controlBase.destroy_node()
     rclpy.shutdown()
 
 

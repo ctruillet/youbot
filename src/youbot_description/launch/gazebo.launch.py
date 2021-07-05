@@ -27,15 +27,15 @@ def generate_launch_description():
         #     executable='robot_state_publisher',
         #     output='both',
         #     parameters=[{'robot_description': robot_desc}]),
-        Node(
-            package='teleop_twist_keyboard',
-            namespace='teleop_twist_keyboard',
-            executable='teleop_twist_keyboard',
-            remappings=[
-                ('/teleop_twist_keyboard/cmd_vel','/youbot/cmd_vel')
-            ],
-            output='screen',
-            prefix = 'xterm -e'
-        )
+        # Node(
+        #     package='teleop_twist_keyboard',
+        #     namespace='teleop_twist_keyboard',
+        #     executable='teleop_twist_keyboard',
+        #     remappings=[
+        #         ('/teleop_twist_keyboard/cmd_vel','/youbot/cmd_vel')
+        #     ],
+        #     output='screen',
+        #     prefix = 'xterm -e'
+        # )
     ])
 
